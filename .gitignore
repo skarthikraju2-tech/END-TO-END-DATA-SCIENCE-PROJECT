@@ -1,0 +1,15 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Data and model artifacts
+data/
+models/
+# Environment
+.venv/
+venv/
+.env
+# Editor files
+.vscode/
+.ipynb_checkpoints/
