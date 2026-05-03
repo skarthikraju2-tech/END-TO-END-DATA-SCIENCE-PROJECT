@@ -5,7 +5,6 @@ import pandas as pd
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "housing_model.joblib"
 
-
 def load_model():
     if not MODEL_PATH.exists():
         raise FileNotFoundError(
@@ -13,17 +12,18 @@ def load_model():
         )
     return joblib.load(MODEL_PATH)
 
-
 def predict(model, payload: dict) -> float:
     df = pd.DataFrame([payload])
     prediction = model.predict(df)
     return float(prediction[0])
 
-
 def get_model_info(model) -> dict:
     pipeline = getattr(model, "named_steps", None)
-    model_info = {"model_type": type(model.named_steps["model"]).__name__}
-    transformer = model.named_steps.get("scaler")
+    if pipeline is None:
+        return {"model_type": type(model).__name__}
+    
+    model_info = {"model_type": type(pipeline["model"])::__name__}
+    transformer = pipeline.get("scaler")
     if transformer is not None and hasattr(transformer, "transformers_"):
         for name, _, features in transformer.transformers_:
             if name == "num":
